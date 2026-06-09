@@ -6,11 +6,11 @@
     <title>神祕夢境：特質與角色靈魂連結測驗</title>
     <style>
         :root {
-            --primary-color: #4a3f5a;
-            --secondary-color: #8c7a6b;
-            --bg-color: #f7f5f0;
-            --card-bg: #ffffff;
-            --text-color: #333333;
+            --primary-color: #9b5de5;   /* 亮紫色 */
+            --secondary-color: #00bbf9; /* 亮藍色 */
+            --bg-color: #0d0a15;        /* 宇宙深黑底 */
+            --card-bg: #1a1625;         /* 主框神祕暗紫黑 */
+            --text-color: #ffffff;      /* 純白文字 */
         }
 
         body {
@@ -25,68 +25,61 @@
             min-height: 100vh;
         }
 
-/* 1. 修改原本的 .container 樣式，讓它變成透明底，才能露出後方的霓虹流光 */
-.container {
-    max-width: 700px;
-    width: 100%;
-    background: #1a1625; /* 改為深色背景，霓虹燈效果會極度明顯！如果你想維持白底，可改回 #ffffff */
-    color: #ffffff;      /* 配合深色背景，文字改成白色 */
-    padding: 30px;
-    border-radius: 16px;
-    position: relative;  /* 必須加上這行，定位霓虹燈條 */
-    box-sizing: border-box;
-    z-index: 1;
-}
+        /* 1. 霓虹燈主框 */
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: var(--card-bg);
+            color: var(--text-color);
+            padding: 30px;
+            border-radius: 16px;
+            position: relative;
+            box-sizing: border-box;
+            z-index: 1;
+        }
 
-/* 2. 新增：利用偽元素做出紫、白、藍三色流動的霓虹外框 */
-.container::before {
-    content: '';
-    position: absolute;
-    top: -4px; left: -4px; right: -4px; bottom: -4px; /* 控制霓虹燈條的粗細 */
-    background: linear-gradient(90deg, #9b5de5, #ffffff, #00bbf9, #9b5de5);
-    background-size: 400% 400%; /* 放大背景尺寸以利動畫流動 */
-    border-radius: 20px;       /* 稍微比主框大一點點，營造圓角 */
-    z-index: -1;                /* 放在題目框的後面 */
-    animation: neonFlow 6s linear infinite; /* 6秒流動一圈，無限循環 */
-    
-    /* 核心：多層次模糊陰影，做出光暈擴散的電競霓虹感 */
-    box-shadow: 0 0 10px #9b5de5,
-                0 0 20px #00bbf9,
-                0 0 35px #9b5de5;
-}
+        /* 2. 三色霓虹流動效果 */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            background: linear-gradient(90deg, #9b5de5, #ffffff, #00bbf9, #9b5de5);
+            background-size: 400% 400%;
+            border-radius: 20px;
+            z-index: -1;
+            animation: neonFlow 6s linear infinite;
+            box-shadow: 0 0 15px #9b5de5,
+                        0 0 25px #00bbf9;
+        }
 
-/* 3. 新增：控制霓虹燈顏色位移的動畫 */
-@keyframes neonFlow {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
+        /* 3. 霓虹燈動畫 */
+        @keyframes neonFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         h1 {
             text-align: center;
-            color: var(--primary-color);
-            font-size: 24px;
+            color: var(--secondary-color);
+            font-size: 26px;
             margin-bottom: 10px;
+            text-shadow: 0 0 8px rgba(0, 187, 249, 0.6);
         }
 
         .intro {
             text-align: center;
-            color: #666;
+            color: #bfaecf;
             margin-bottom: 30px;
             font-size: 14px;
             line-height: 1.6;
         }
 
+        /* 進度條改為霓虹漸層色 */
         .progress-bar {
             width: 100%;
             height: 6px;
-            background-color: #e0e0e0;
+            background-color: #2d253d;
             border-radius: 3px;
             margin-bottom: 30px;
             overflow: hidden;
@@ -94,7 +87,7 @@
 
         .progress {
             height: 100%;
-            background-color: var(--primary-color);
+            background: linear-gradient(90deg, #9b5de5, #00bbf9);
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -111,9 +104,9 @@
         .question-text {
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            line-height: 1.5;
+            margin-bottom: 25px;
+            color: #ffffff;
+            line-height: 1.6;
         }
 
         .options-list {
@@ -122,13 +115,15 @@
             margin: 0;
         }
 
+        /* 選項按鈕深色優化 */
         .option-btn {
             width: 100%;
             padding: 15px 20px;
-            background: #fff;
-            border: 2px solid #e0e0e0;
+            background: #252033;
+            border: 2px solid #4a3f5a;
+            color: #ffffff;
             border-radius: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             text-align: left;
             font-size: 16px;
             cursor: pointer;
@@ -136,9 +131,12 @@
             box-sizing: border-box;
         }
 
+        /* 滑鼠懸停時發光 */
         .option-btn:hover {
-            border-color: var(--primary-color);
-            background-color: #fafdff;
+            border-color: var(--secondary-color);
+            background-color: #2d2741;
+            box-shadow: 0 0 10px rgba(0, 187, 249, 0.4);
+            transform: translateY(-1px);
         }
 
         .result-box {
@@ -151,8 +149,10 @@
             animation: fadeIn 0.5s ease;
         }
 
+        /* 分數面板暗色優化 */
         .scores-display {
-            background: #f0edf5;
+            background: #252033;
+            border: 1px solid #4a3f5a;
             padding: 15px;
             border-radius: 8px;
             margin: 20px 0;
@@ -163,20 +163,21 @@
 
         .character-match {
             margin-top: 30px;
-            border-top: 2px dashed #e0e0e0;
+            border-top: 2px dashed #4a3f5a;
             padding-top: 20px;
         }
 
         .match-title {
             font-size: 20px;
             font-weight: bold;
-            color: var(--primary-color);
+            color: var(--secondary-color);
             margin-bottom: 15px;
         }
 
+        /* 角色結果卡片暗色優化 */
         .character-card {
-            background: #fdfbf7;
-            border: 1px solid #ebdcd0;
+            background: #221c30;
+            border: 1px solid #4a3f5a;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -191,7 +192,8 @@
             border-radius: 50%;
             object-fit: cover;
             margin-right: 20px;
-            border: 3px solid #ebdcd0;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 8px rgba(155, 93, 229, 0.4);
         }
 
         .character-info {
@@ -201,18 +203,26 @@
         .character-name {
             font-weight: bold;
             font-size: 18px;
-            color: #8c52ff;
+            color: #00bbf9;
         }
 
         .restart-btn {
             margin-top: 25px;
             padding: 12px 30px;
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, #9b5de5, #00bbf9);
             color: white;
             border: none;
             border-radius: 25px;
             font-size: 16px;
             cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(155, 93, 229, 0.4);
+            transition: all 0.2s;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 187, 249, 0.6);
         }
 
         @keyframes fadeIn {
@@ -276,7 +286,7 @@ const characters = [
     { name: "民國沈寄", attrs: { 依戀: 3, 思維: 4, 溫和: 2, 探索: 1 } },
     { name: "現代沈寄", attrs: { 思維: 5, 溫和: 1, 探索: 3, 依戀: 1 } },
     { name: "沈覲", attrs: { 思維: 5, 溫和: 3, 探索: 2, 依戀: 0 } },
-    { name: "林粲", attrs: { 思維: 5, 探索: 2, 溫和: 1, 依戀: 2 } },
+    { name: "林粲", attrs: { 思維: 5, 探索: 2, 溫和: 1, 2: 2 } },
     { name: "鄧懷琦", attrs: { 探索: 5, 依戀: 5, 溫和: 0, 思維: 0 } },
     { name: "阿勒赤", attrs: { 溫和: 2, 探索: 5, 依戀: 3, 思維: 0 } },
     { name: "蘇子冪", attrs: { 溫和: 3, 依戀: 4, 探索: 2, 思維: 1 } },
@@ -382,7 +392,7 @@ function showResults() {
             <img src="${imageSrc}" alt="${char.name}" class="character-image" onerror="this.src='default_avatar.png'; this.onerror=null;">
             <div class="character-info">
                 <div><span class="character-name">${i+1}. ${char.name}</span> (契合度 ${char.similarity}%)</div>
-                <div style="font-size: 13px; color: #777; margin-top: 5px;">角色特質基礎：${attrText}</div>
+                <div style="font-size: 13px; color: #aaa; margin-top: 5px;">角色特質基礎：${attrText}</div>
             </div>
         `;
         matchListContainer.appendChild(card);
