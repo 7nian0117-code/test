@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神祕夢境：特質與角色靈魂連結測驗</title>
+    <style>
+        /* 基礎樣式 - 保持不變，加入圖片樣式 */
+        :root {
+            --primary-color: #4a3f5a;
+            --secondary-color: #8c7a6b;
+            --bg-color: #f7f5f0;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px; /* 稍微加大以容納圖片 */
+            width: 100%;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .intro {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-box {
+            display: none;
+        }
+
+        .question-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            line-height: 1.5;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 15px 20px;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary-color);
+            background-color: #fafdff;
+        }
+
+        /* 結果頁面樣式 */
+        .result-box {
+            display: none;
+            text-align: center;
+        }
+
+        .result-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .scores-display {
+            background: #f0edf5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .character-match {
+            margin-top: 30px;
+            border-top: 2px dashed #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .match-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .character-card {
+            background: #fdfbf7;
+            border: 1px solid #ebdcd0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px; /* 加大間距 */
+            text-align: left;
+            display: flex; /* 使用 flex 排版，讓圖片和文字並排 */
+            align-items: center; /* 垂直居中 */
+        }
+
+        .character-image {
+            width: 100px; /* 縮圖寬度 */
+            height: 100px; /* 縮圖高度 */
+            border-radius: 50%; /* 圓形縮圖 */
+            object-fit: cover; /* 確保圖片不變形 */
+            margin-right: 20px; /* 圖片與文字的間距 */
+            border: 3px solid #ebdcd0;
+        }
+
+        .character-info {
+            flex: 1; /* 讓文字區域佔滿剩餘空間 */
+        }
+
+        .character-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #8c52ff;
+        }
+
+        .restart-btn {
+            margin-top: 25px;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>✨ 神祕夢境測驗 ✨</h1>
+    <div class="intro" id="intro-text">探索內心深處的特質，尋找與你靈魂最契合的角色。</div>
+    
+    <div class="progress-bar" id="progress-container">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div id="result-container" class="result-box">
+        <h2>🔮 測驗結果 🔮</h2>
+        <p>你已從神祕的夢境中甦醒，這是你展現出的精神特質：</p>
+        
+        <div class="scores-display">
+            <div>溫和: <span id="score-溫和">0</span></div>
+            <div>探索: <span id="score-探索">0</span></div>
+            <div>思維: <span id="score-思維">0</span></div>
+            <div>依戀: <span id="score-依戀">0</span></div>
+        </div>
+
+        <div class="character-match">
+            <div class="match-title">💞 靈魂契合度最高的角色 💞</div>
+            <div id="match-list"></div>
+        </div>
+
+        <button class="restart-btn" onclick="restartQuiz()">重新測驗</button>
+    </div>
+</div>
+
+<script>
+// 1. 題目數據 (保持不變)
+const questions = [
+    { q: "一、已經到了入睡的時間，你躺上床，隨著睡意慢慢湧上，你進入了一個神祕的夢境，在一片漆黑的夢中你先看到了……", options: [ { t: "A、一把爬滿綠色藤蔓的鑰匙，充滿了生機", a: "溫和" }, { t: "B、一個半開的寶箱，微微露出一絲光線", a: "探索" }, { t: "C、一疊整齊擺放的文件，上面充滿了註記", a: "思維" }, { t: "D、一個手柄破舊的放大鏡，有著使用的痕跡", a: "依戀" } ] },
+    { q: "二、當你拿起了剛才選擇的東西，你感覺到了……", options: [ { t: "A、一陣古老的寒意，像是陳年的地窖", a: "思維" }, { t: "B、風從指尖纏繞上來，聞到了一陣花香", a: "溫和" }, { t: "C、彷彿置身在草原中，歡欣的鳥兒在啼叫", a: "探索" }, { t: "D、周遭的景物在變化，好像回到了往日時光", a: "依戀" } ] },
+    { q: "三、畫面變換到了一個神祕的圖書館中，你忍不住期待接下來會遇到……", options: [ { t: "A、一群努力打掃的小精靈正在書架上飛舞", a: "探索" }, { t: "B、一本深藏在書櫃最深處，隱約發光的魔法書", a: "思維" }, { t: "C、一本記載著古老王國歷史的大事記", a: "依戀" }, { t: "D、一位和藹的圖書館員，正對著你招手", a: "溫和" } ] },
+    { q: "四、突然，有一陣狂風吹來，把你從窗戶捲入高空中，你現在……", options: [ { t: "A、慌亂地揮舞著四肢，不敢看自己現在身在何處", a: "依戀" }, { t: "B、享受地看著下方的風景，發現這個地方比想像中大", a: "探索" }, { t: "C、試圖在空中保持平衡，並且四處觀望找尋能夠安全降落的方法", a: "思維" }, { t: "D、花瓣跟著你被捲起，你被花吸引了注意力", a: "溫和" } ] },
+    { q: "五、此時，____________幫助了你，讓你脫離了這陣狂風", options: [ { t: "A、一位笨拙的仙子，搖搖晃晃地", a: "溫和" }, { t: "B、一艘航行在空中的巨大飛船，湊巧地", a: "思維" }, { t: "C、一隻拍動著翅膀的飛龍，凶狠地", a: "探索" }, { t: "D、一片偶然途經的雲朵，頑皮地", a: "依戀" } ] },
+    { q: "六、落地以後，你發現自己處在一個洞窟，而他讓你喝下了___________，並告訴你這可以__________？", options: [ { t: "A、冒著泡泡的神秘藥劑；讓你變得百毒不侵", a: "思維" }, { t: "B、一杯你最熟悉的手搖飲；讓你變得很好吃", a: "依戀" }, { t: "C、用晨露釀造的花蜜；讓你變得巨大", a: "探索" }, { t: "D、一碗讓你用古怪的食材調配的湯；讓你忘記苦惱", a: "溫和" } ] },
+    { q: "七、當你準備喝下的時候，竟然從旁冒出了________，把你手上的東西搶去喝", options: [ { t: "A、一群頑皮的鸚鵡", a: "溫和" }, { t: "B、一隻在暗處窺探你們的狐狸", a: "思維" }, { t: "C、一位飢不織食的老者", a: "依戀" }, { t: "D、三名勇敢的劍士", a: "探索" } ] },
+    { q: "八、當他們喝下以後，產生了一陣巨大的白煙，你決定……", options: [ { t: "A、趕快逃離這裡，繼續往前方找尋更新奇的東西", a: "探索" }, { t: "B、躲在暗處靜觀其變，看看到底會發生什麼事", a: "思維" }, { t: "C、留在這裡，避免引來不必要的危險", a: "依戀" }, { t: "D、盯著他看，觀察他的外觀有沒有發生變化", a: "溫和" } ] },
+    { q: "九、經歷完這一切奇怪的遭遇，你懷念起了……", options: [ { t: "A、冒著白煙的山洞", a: "探索" }, { t: "B、夢境最初的那片黑暗", a: "溫和" }, { t: "C、散發著神祕氣息的圖書館", a: "思維" }, { t: "D、帶你進入夢境的那張床", a: "依戀" } ] },
+    { q: "十、你終於從夢中醒來，在你的床頭櫃多了……", options: [ { t: "A、一顆飛龍的牙齒", a: "探索" }, { t: "B、一張古怪的借書證", a: "思維" }, { t: "C、一個無法發出聲音的音樂盒", a: "依戀" }, { t: "D、一片剛摘下的花瓣", a: "溫和" } ] }
+];
+
+// 2. 角色數據
+const characters = [
+    { name: "許念", attrs: { 探索: 6, 溫和: 2, 依戀: 2, 思維: 0 } },
+    { name: "遲渡", attrs: { 探索: 4, 溫和: 2, 依戀: 4, 思維: 0 } },
+    { name: "江曳", attrs: { 探索: 4, 溫和: 3, 依戀: 3, 思維: 0 } },
+    { name: "學生殷慕", attrs: { 思維: 4, 依戀: 4, 探索: 2, 溫和: 0 } },
+    { name: "律師殷慕", attrs: { 思維: 5, 依戀: 4, 探索: 1, 溫和: 0 } },
+    { name: "民國沈寄", attrs: { 依戀: 3, 思維: 5, 溫和: 2, 探索: 0 } },
+    { name: "現代沈寄", attrs: { 思維: 5, 溫和: 1, 探索: 3, 依戀: 1 } },
+    { name: "沈覲", attrs: { 思維: 5, 溫和: 3, 探索: 2, 依戀: 0 } },
+    { name: "林粲", attrs: { 思維: 5, 探索: 2, 溫和: 1, 依戀: 2 } },
+    { name: "鄧懷琦", attrs: { 探索: 5, 依戀: 5, 溫和: 0, 思維: 0 } },
+    { name: "阿勒赤", attrs: { 溫和: 2, 探索: 5, 依戀: 3, 思維: 0 } },
+    { name: "蘇子冪", attrs: { 溫和: 3, 依戀: 4, 探索: 2, 思維: 1 } },
+    { name: "高馥", attrs: { 依戀: 5, 思維: 2, 探索: 2, 溫和: 1 } }
+];
+];
+
+// 3. 測驗運行狀態 (保持不變)
+let currentQuestionIndex = 0;
+let userScores = { 溫和: 0, 探索: 0, 思維: 0, 依戀: 0 };
+
+// 初始化測驗畫面 (保持不變)
+function initQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+    
+    questions.forEach((qData, index) => {
+        const qBox = document.createElement('div');
+        qBox.className = `question-box ${index === 0 ? 'active' : ''}`;
+        qBox.id = `q-${index}`;
+
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerText = qData.q;
+        qBox.appendChild(qText);
+
+        const optionsList = document.createElement('ul');
+        optionsList.className = 'options-list';
+
+        qData.options.forEach(opt => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.t;
+            btn.onclick = () => selectOption(opt.a);
+            li.appendChild(btn);
+            optionsList.appendChild(li);
+        });
+
+        qBox.appendChild(optionsList);
+        container.appendChild(qBox);
+    });
+    updateProgressBar();
+}
+
+// 選擇答案後的處理 (保持不變)
+function selectOption(attribute) {
+    userScores[attribute]++;
+    
+    document.getElementById(`q-${currentQuestionIndex}`).classList.remove('active');
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+        document.getElementById(`q-${currentQuestionIndex}`).classList.add('active');
+        updateProgressBar();
+    } else {
+        showResults();
+    }
+}
+
+// 更新進度條 (保持不變)
+function updateProgressBar() {
+    const progress = (currentQuestionIndex / questions.length) * 100;
+    document.getElementById('progress').style.width = `${progress}%`;
+}
+
+// 計算與角色的「歐氏距離」 (保持不變)
+function calculateMatches() {
+    let matches = characters.map(char => {
+        let distanceSquare = 0;
+        for (let attr in userScores) {
+            let userVal = userScores[attr];
+            let charVal = char.attrs[attr] || 0;
+            distanceSquare += Math.pow(userVal - charVal, 2);
+        }
+        let distance = Math.sqrt(distanceSquare);
+        
+        // 將距離轉換為契合度百分比 (基於 10 題的最大理論距離約為 12 左右)
+        let similarity = Math.max(0, Math.round((1 - (distance / 12)) * 100));
+        return { name: char.name, similarity: similarity, attrs: char.attrs };
+    });
+
+    return matches.sort((a, b) => b.similarity - a.similarity);
+}
+
+// 顯示結果頁面 (加入圖片載入邏輯)
+function showResults() {
+    document.getElementById('progress-container').style.display = 'none';
+    document.getElementById('intro-text').style.display = 'none';
+    
+    // 顯示分數
+    for (let attr in userScores) {
+        document.getElementById(`score-${attr}`).innerText = userScores[attr];
+    }
+
+    // 計算並顯示前 3 名契合的角色
+    const sortedMatches = calculateMatches();
+    const matchListContainer = document.getElementById('match-list');
+    matchListContainer.innerHTML = '';
+
+    // 取前 3 名
+    for(let i = 0; i < 3; i++) {
+        const char = sortedMatches[i];
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        
+        // 組合角色的特質文字以便對照
+        let attrText = Object.entries(char.attrs)
+            .filter(([_, val]) => val > 0)
+            .map(([key, val]) => `${key}+${val}`)
+            .join(' / ');
+
+        // 動態生成 HTML，加入圖片和資訊
+        // 假設圖片格式為 JPG，如果使用 PNG 請將此處修改為 .png
+        const imageSrc = `${char.name}.jpg`; 
+        
+        card.innerHTML = `
+            <img src="${imageSrc}" alt="${char.name}" class="character-image" onerror="this.src='default_avatar.jpg'; this.onerror=null;">
+            <div class="character-info">
+                <div><span class="character-name">${i+1}. ${char.name}</span> (契合度 ${char.similarity}%)</div>
+                <div style="font-size: 13px; color: #777; margin-top: 5px;">角色特質基礎：${attrText}</div>
+            </div>
+        `;
+        matchListContainer.appendChild(card);
+    }
+
+    document.getElementById('result-container').classList.add('active');
+}
+
+// 重新開始 (保持不變)
+function restartQuiz() {
+    currentQuestionIndex = 0;
+    userScores = { 溫和: 0, 探索: 0, 思維: 0, 依戀: 0 };
+    document.getElementById('result-container').classList.remove('active');
+    document.getElementById('progress-container').style.display = 'block';
+    document.getElementById('intro-text').style.display = 'block';
+    initQuiz();
+}
+
+// 網頁載入時初始化
+window.onload = initQuiz;
+</script>
+
+</body>
+</html>
