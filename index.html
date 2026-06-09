@@ -9,7 +9,6 @@
             --primary-color: #9b5de5;   /* 亮紫色 */
             --secondary-color: #00bbf9; /* 亮藍色 */
             --bg-color: #f7f5f0;        /* 網頁大背景 */
-            --card-bg: #ffffff;         /* 題目主體框純白色 */
             --text-color: #333333;      /* 深色文字 */
         }
 
@@ -25,40 +24,37 @@
             min-height: 100vh;
         }
 
-        /* 題目主框：設定為不透光的純白底，擋住後方多餘的漸層 */
-        .container {
+        /* 【新思路 1】外層：只負責生成 4px 的霓虹閃動邊線，不影響內部 */
+        .neon-border-wrapper {
             max-width: 700px;
             width: 100%;
-            background: var(--card-bg) !important; /* 確保完全不透光 */
-            color: var(--text-color);
-            padding: 30px;
-            border-radius: 16px;
+            border-radius: 20px;
+            padding: 4px; /* 這個 padding 就是你看到的霓虹線條粗細 (4px) */
             position: relative;
-            box-sizing: border-box;
-            z-index: 1;
-        }
-
-        /* 霓虹邊緣線條：透過負數的 top/left 以及特殊的 z-index 把它逼到最邊緣 */
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -4px; left: -4px; right: -4px; bottom: -4px; /* 這四個數值決定霓虹燈條的粗細 */
             background: linear-gradient(90deg, #9b5de5, #ffffff, #00bbf9, #9b5de5);
             background-size: 400% 400%;
-            border-radius: 20px; /* 略大於主框的圓角，讓邊線粗細均勻 */
-            z-index: -1; 
             animation: neonFlow 6s linear infinite;
             
-            /* 讓陰影淡淡的往外擴散，不影響主框內部 */
-            box-shadow: 0 0 12px rgba(155, 93, 229, 0.4),
-                        0 0 20px rgba(0, 187, 249, 0.4);
+            /* 淡淡的霓虹外發光陰影 */
+            box-shadow: 0 0 15px rgba(155, 93, 229, 0.3),
+                        0 0 25px rgba(0, 187, 249, 0.3);
         }
 
-        /* 霓虹燈動畫 */
+        /* 霓虹邊線流動動畫 */
         @keyframes neonFlow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        /* 【新思路 2】內層：百分之百實心、不透明的純白題目框 */
+        .container {
+            width: 100%;
+            background-color: #ffffff; /* 穩穩的純白底色 */
+            color: var(--text-color);
+            padding: 30px;
+            border-radius: 16px; /* 比外框稍微小一點，剛好完美契合 */
+            box-sizing: border-box;
         }
 
         h1 {
@@ -228,33 +224,35 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>✨ 神祕夢境測驗 ✨</h1>
-    <div class="intro" id="intro-text">探索內心深處的特質，尋找與你靈魂最契合的角色。</div>
-    
-    <div class="progress-bar" id="progress-container">
-        <div class="progress" id="progress"></div>
-    </div>
-
-    <div id="quiz-container"></div>
-
-    <div id="result-container" class="result-box">
-        <h2>🔮 測驗結果 🔮</h2>
-        <p>你已從神祕的夢境中甦醒，這是你展現出的精神特質：</p>
+<div class="neon-border-wrapper">
+    <div class="container">
+        <h1>✨ 神祕夢境測驗 ✨</h1>
+        <div class="intro" id="intro-text">探索內心深處的特質，尋找與你靈魂最契合的角色。</div>
         
-        <div class="scores-display">
-            <div>溫和: <span id="score-溫和">0</span></div>
-            <div>探索: <span id="score-探索">0</span></div>
-            <div>思維: <span id="score-思維">0</span></div>
-            <div>依戀: <span id="score-依戀">0</span></div>
+        <div class="progress-bar" id="progress-container">
+            <div class="progress" id="progress"></div>
         </div>
 
-        <div class="character-match">
-            <div class="match-title">💞 靈魂契合度最高的角色 💞</div>
-            <div id="match-list"></div>
-        </div>
+        <div id="quiz-container"></div>
 
-        <button class="restart-btn" onclick="restartQuiz()">重新測驗</button>
+        <div id="result-container" class="result-box">
+            <h2>🔮 測驗結果 🔮</h2>
+            <p>你已從神祕的夢境中甦醒，這是你展現出的精神特質：</p>
+            
+            <div class="scores-display">
+                <div>溫和: <span id="score-溫和">0</span></div>
+                <div>探索: <span id="score-探索">0</span></div>
+                <div>思維: <span id="score-思維">0</span></div>
+                <div>依戀: <span id="score-依戀">0</span></div>
+            </div>
+
+            <div class="character-match">
+                <div class="match-title">💞 靈魂契合度最高的角色 💞</div>
+                <div id="match-list"></div>
+            </div>
+
+            <button class="restart-btn" onclick="restartQuiz()">重新測驗</button>
+        </div>
     </div>
 </div>
 
@@ -265,9 +263,9 @@ const questions = [
     { q: "三、畫面變換到了一個神祕的圖書館中，你忍不住期待接下來會遇到……", options: [ { t: "A、一群努力打掃的小精靈正在書架上飛舞", a: "探索" }, { t: "B、一本深藏在書櫃最深處，隱約發光的魔法書", a: "思維" }, { t: "C、一本記載著古老王國歷史的大事記", a: "依戀" }, { t: "D、一位和藹的圖書館員，正對著你招手", a: "溫和" } ] },
     { q: "四、突然，有一陣狂風吹來，把你從窗戶捲入高空中，你現在……", options: [ { t: "A、慌亂地揮舞著四肢，不敢看自己現在身在何處", a: "依戀" }, { t: "B、享受地看著下方的風景，發現這個地方比想像中大", a: "探索" }, { t: "C、試圖在空中保持平衡，並且四處觀望找尋能夠安全降落的方法", a: "思維" }, { t: "D、花瓣跟著你被捲起，你被花吸引了注意力", a: "溫和" } ] },
     { q: "五、此時，____________幫助了你，讓你脫離了這陣狂風", options: [ { t: "A、一位笨拙的仙子，搖搖晃晃地", a: "溫和" }, { t: "B、一艘航行在空中的巨大飛船，湊巧地", a: "思維" }, { t: "C、一隻拍動著翅膀的飛龍，凶狠地", a: "探索" }, { t: "D、一片偶然途經的雲朵，頑皮地", a: "依戀" } ] },
-    { q: "六、落地以後，你發現自己處在一個洞窟，而他讓你喝下了___________，並告訴你這可以__________？", options: [ { t: "A、冒著泡泡的神秘藥劑；讓你變得百毒不侵", a: "思維" }, { t: "B、一杯你最熟悉的手搖飲；讓你變得很好吃", a: "依戀" }, { t: "C、用晨露釀造的花蜜；讓你變得巨大", a: "探索" }, { t: "D、一碗讓你用古怪的食材調配的湯；讓你忘記苦惱", a: "溫和" } ] },
+    { q: "六、落地以後，你發現自己處在一個洞窟，而他讓你喝下了___________，並告訴你這可以__________？", options: [ { t: "A、冒著泡泡的神秘藥劑；讓你變得百毒不侵", a: "思維" }, { t: "B、一杯你最熟悉的手搖飲；讓你變得很好好吃", a: "依戀" }, { t: "C、用晨露釀造的花蜜；讓你變得巨大", a: "探索" }, { t: "D、一碗讓你用古怪的食材調配的湯；讓你忘記苦惱", a: "溫和" } ] },
     { q: "七、當你準備喝下的時候，竟然從旁冒出了________，把你手上的東西搶去喝", options: [ { t: "A、一群頑皮的鸚鵡", a: "溫和" }, { t: "B、一隻在暗處窺探你們的狐狸", a: "思維" }, { t: "C、一位飢不擇食的老者", a: "依戀" }, { t: "D、三名勇敢的劍士", a: "探索" } ] },
-    { q: "八、當他們喝下以後，產生了一陣巨大的白煙，你決定……", options: [ { t: "A、趕快逃離這裡，繼續往前方找尋更新奇的東西", a: "探索" }, { t: "B、躲在暗處靜觀其變，看看到底會发生什麼事", a: "思維" }, { t: "C、留在這裡，避免引來不必要的危險", a: "依戀" }, { t: "D、盯著他看，觀察他的外觀有沒有發生變化", a: "溫和" } ] },
+    { q: "八、當他們喝下以後，產生了一陣巨大的白煙，你決定……", options: [ { t: "A、趕快逃離這裡，繼續往前方找尋更新奇的東西", a: "探索" }, { t: "B、躲在暗處靜觀其變，看看到底會發生什麼事", a: "思維" }, { t: "C、留在這裡，避免引來不必要的危險", a: "依戀" }, { t: "D、盯著他看，觀察他的外觀有沒有發生變化", a: "溫和" } ] },
     { q: "九、經歷完這一切奇怪的遭遇，你懷念起了……", options: [ { t: "A、冒著白煙的山洞", a: "探索" }, { t: "B、夢境最初的那片黑暗", a: "溫和" }, { t: "C、散發著神祕氣息的圖書館", a: "思維" }, { t: "D、帶你進入夢境的那張床", a: "依戀" } ] },
     { q: "十、你終於從夢中醒來，在你的床頭櫃多了……", options: [ { t: "A、一顆飛龍的牙齒", a: "探索" }, { t: "B、一張古怪的借書證", a: "思維" }, { t: "C、一個無法發出聲音的音樂盒", a: "依戀" }, { t: "D、一片剛摘下的花瓣", a: "溫和" } ] }
 ];
