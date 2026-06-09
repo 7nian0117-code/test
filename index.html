@@ -25,7 +25,7 @@
             min-height: 100vh;
         }
 
-        /* 1. 霓虹燈主框 */
+        /* 霓虹燈主框 */
         .container {
             max-width: 700px;
             width: 100%;
@@ -38,7 +38,7 @@
             z-index: 1;
         }
 
-        /* 2. 三色霓虹流動效果 */
+        /* 三色霓虹流動效果 */
         .container::before {
             content: '';
             position: absolute;
@@ -52,7 +52,7 @@
                         0 0 25px #00bbf9;
         }
 
-        /* 3. 霓虹燈動畫 */
+        /* 霓虹燈動畫 */
         @keyframes neonFlow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -75,7 +75,6 @@
             line-height: 1.6;
         }
 
-        /* 進度條改為霓虹漸層色 */
         .progress-bar {
             width: 100%;
             height: 6px;
@@ -115,7 +114,6 @@
             margin: 0;
         }
 
-        /* 選項按鈕深色優化 */
         .option-btn {
             width: 100%;
             padding: 15px 20px;
@@ -131,7 +129,6 @@
             box-sizing: border-box;
         }
 
-        /* 滑鼠懸停時發光 */
         .option-btn:hover {
             border-color: var(--secondary-color);
             background-color: #2d2741;
@@ -149,7 +146,6 @@
             animation: fadeIn 0.5s ease;
         }
 
-        /* 分數面板暗色優化 */
         .scores-display {
             background: #252033;
             border: 1px solid #4a3f5a;
@@ -174,7 +170,6 @@
             margin-bottom: 15px;
         }
 
-        /* 角色結果卡片暗色優化 */
         .character-card {
             background: #221c30;
             border: 1px solid #4a3f5a;
@@ -286,7 +281,7 @@ const characters = [
     { name: "民國沈寄", attrs: { 依戀: 3, 思維: 4, 溫和: 2, 探索: 1 } },
     { name: "現代沈寄", attrs: { 思維: 5, 溫和: 1, 探索: 3, 依戀: 1 } },
     { name: "沈覲", attrs: { 思維: 5, 溫和: 3, 探索: 2, 依戀: 0 } },
-    { name: "林粲", attrs: { 思維: 5, 探索: 2, 溫和: 1, 2: 2 } },
+    { name: "林粲", attrs: { 思維: 5, 探索: 2, 溫和: 1, 依戀: 2 } },
     { name: "鄧懷琦", attrs: { 探索: 5, 依戀: 5, 溫和: 0, 思維: 0 } },
     { name: "阿勒赤", attrs: { 溫和: 2, 探索: 5, 依戀: 3, 思維: 0 } },
     { name: "蘇子冪", attrs: { 溫和: 3, 依戀: 4, 探索: 2, 思維: 1 } },
@@ -373,45 +368,4 @@ function showResults() {
     }
 
     const sortedMatches = calculateMatches();
-    const matchListContainer = document.getElementById('match-list');
-    matchListContainer.innerHTML = '';
-
-    for(let i = 0; i < 3; i++) {
-        const char = sortedMatches[i];
-        const card = document.createElement('div');
-        card.className = 'character-card';
-        
-        let attrText = Object.entries(char.attrs)
-            .filter(([_, val]) => val > 0)
-            .map(([key, val]) => `${key}+${val}`)
-            .join(' / ');
-
-        const imageSrc = `${char.name}.png`; 
-        
-        card.innerHTML = `
-            <img src="${imageSrc}" alt="${char.name}" class="character-image" onerror="this.src='default_avatar.png'; this.onerror=null;">
-            <div class="character-info">
-                <div><span class="character-name">${i+1}. ${char.name}</span> (契合度 ${char.similarity}%)</div>
-                <div style="font-size: 13px; color: #aaa; margin-top: 5px;">角色特質基礎：${attrText}</div>
-            </div>
-        `;
-        matchListContainer.appendChild(card);
-    }
-
-    document.getElementById('result-container').classList.add('active');
-}
-
-function restartQuiz() {
-    currentQuestionIndex = 0;
-    userScores = { 溫和: 0, 探索: 0, 思維: 0, 依戀: 0 };
-    document.getElementById('result-container').classList.remove('active');
-    document.getElementById('progress-container').style.display = 'block';
-    document.getElementById('intro-text').style.display = 'block';
-    initQuiz();
-}
-
-window.onload = initQuiz;
-</script>
-
-</body>
-</html>
+    const matchListContainer = document.
