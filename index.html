@@ -362,10 +362,10 @@ function showResults() {
 
         // 動態生成 HTML，加入圖片和資訊
         // 假設圖片格式為 JPG，如果使用 PNG 請將此處修改為 .png
-        const imageSrc = `${char.name}.jpg`; 
+        const imageSrc = `${char.name}.png`; 
         
         card.innerHTML = `
-            <img src="${imageSrc}" alt="${char.name}" class="character-image" onerror="this.src='default_avatar.jpg'; this.onerror=null;">
+            <img src="${imageSrc}" alt="${char.name}" class="character-image" onerror="this.src='default_avatar.png'; this.onerror=null;">
             <div class="character-info">
                 <div><span class="character-name">${i+1}. ${char.name}</span> (契合度 ${char.similarity}%)</div>
                 <div style="font-size: 13px; color: #777; margin-top: 5px;">角色特質基礎：${attrText}</div>
