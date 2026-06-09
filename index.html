@@ -25,15 +25,48 @@
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 700px;
-            width: 100%;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-        }
+/* 1. 修改原本的 .container 樣式，讓它變成透明底，才能露出後方的霓虹流光 */
+.container {
+    max-width: 700px;
+    width: 100%;
+    background: #1a1625; /* 改為深色背景，霓虹燈效果會極度明顯！如果你想維持白底，可改回 #ffffff */
+    color: #ffffff;      /* 配合深色背景，文字改成白色 */
+    padding: 30px;
+    border-radius: 16px;
+    position: relative;  /* 必須加上這行，定位霓虹燈條 */
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+/* 2. 新增：利用偽元素做出紫、白、藍三色流動的霓虹外框 */
+.container::before {
+    content: '';
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px; /* 控制霓虹燈條的粗細 */
+    background: linear-gradient(90deg, #9b5de5, #ffffff, #00bbf9, #9b5de5);
+    background-size: 400% 400%; /* 放大背景尺寸以利動畫流動 */
+    border-radius: 20px;       /* 稍微比主框大一點點，營造圓角 */
+    z-index: -1;                /* 放在題目框的後面 */
+    animation: neonFlow 6s linear infinite; /* 6秒流動一圈，無限循環 */
+    
+    /* 核心：多層次模糊陰影，做出光暈擴散的電競霓虹感 */
+    box-shadow: 0 0 10px #9b5de5,
+                0 0 20px #00bbf9,
+                0 0 35px #9b5de5;
+}
+
+/* 3. 新增：控制霓虹燈顏色位移的動畫 */
+@keyframes neonFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 
         h1 {
             text-align: center;
