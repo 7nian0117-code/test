@@ -286,4 +286,129 @@ const characters = [
     { name: "林粲", attrs: { 思維: 5, 探索: 2, 溫和: 1, 依戀: 2 } },
     { name: "鄧懷琦", attrs: { 探索: 5, 依戀: 5, 溫和: 0, 思維: 0 } },
     { name: "阿勒赤", attrs: { 溫和: 2, 探索: 5, 依戀: 3, 思維: 0 } },
-    { name: "蘇子冪", attrs: { 溫和: 3, 依戀: 4, 探索: 2, 思維: 1 }
+    { name: "蘇子冪", attrs: { 溫和: 3, 依戀: 4, 探索: 2, 思維: 1 } },
+    { name: "高馥", attrs: { 依戀: 5, 思維: 2, 探索: 2, 溫和: 1 } }
+];
+
+let currentQuestionIndex = 0;
+let userScores = { 溫和: 0, 探索: 0, 思維: 0, 依戀: 0 };
+
+function initQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+    
+    questions.forEach((qData, index) => {
+        const qBox = document.createElement('div');
+        qBox.className = `question-box ${index === 0 ? 'active' : ''}`;
+        qBox.id = `q-${index}`;
+
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerText = qData.q;
+        qBox.appendChild(qText);
+
+        const optionsList = document.createElement('ul');
+        optionsList.className = 'options-list';
+
+        qData.options.forEach(opt => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.t;
+            btn.onclick = () => selectOption(opt.a);
+            li.appendChild(btn);
+            optionsList.appendChild(li);
+        });
+
+        qBox.appendChild(optionsList);
+        container.appendChild(qBox);
+    });
+    updateProgressBar();
+}
+
+function selectOption(attribute) {
+    userScores[attribute]++;
+    
+    document.getElementById(`q-${currentQuestionIndex}`).classList.remove('active');
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+        document.getElementById(`q-${currentQuestionIndex}`).classList.add('active');
+        updateProgressBar();
+    } else {
+        showResults();
+    }
+}
+
+function updateProgressBar() {
+    const progress = (currentQuestionIndex / questions.length) * 100;
+    document.getElementById('progress').style.width = `${progress}%`;
+}
+
+function calculateMatches() {
+    let matches = characters.map(char => {
+        let distanceSquare = 0;
+        for (let attr in userScores) {
+            let userVal = userScores[attr];
+            let charVal = char.attrs[attr] || 0;
+            distanceSquare += Math.pow(userVal - charVal, 2);
+        }
+        let distance = Math.sqrt(distanceSquare);
+        let similarity = Math.max(0, Math.round((1 - (distance / 12)) * 100));
+        return { name: char.name, similarity: similarity, attrs: char.attrs };
+    });
+
+    return matches.sort((a, b) => b.similarity - a.similarity);
+}
+
+function showResults() {
+    document.getElementById('progress-container').style.display = 'none';
+    document.getElementById('intro-text').style.display = 'none';
+    
+    for (let attr in userScores) {
+        document.getElementById(`score-${attr}`).innerText = userScores[attr];
+    }
+
+    const sortedMatches = calculateMatches();
+    const matchListContainer = document.getElementById('match-list');
+    matchListContainer.innerHTML = '';
+
+    for(let i = 0; i < 3; i++) {
+        const char = sortedMatches[i];
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        
+        let attrText = Object.entries(char.attrs)
+            .filter(([_, val]) => val > 0)
+            .map(([key, val]) => `${key}+${val}`)
+            .join(' / ');
+
+        const imageSrc = `${char.name}.png`; 
+        
+        card.innerHTML = `
+            <img src="${imageSrc}" alt="${char.name}" class="character-image" onerror="this.src='default_avatar.png'; this.onerror=null;">
+            <div class="character-info">
+                <div><span class="character-name">${i+1}. ${char.name}</span> (契合度 ${char.similarity}%)</div>
+                <div style="font-size: 13px; color: #666; margin-top: 5px;">角色特質基礎：${attrText}</div>
+            </div>
+        `;
+        matchListContainer.appendChild(card);
+    }
+
+    document.getElementById('result-container').classList.add('active');
+}
+
+function restartQuiz() {
+    currentQuestionIndex = 0;
+    userScores = { 溫和: 0, 探索: 0, 思維: 0, 依戀: 0 };
+    document.getElementById('result-container').classList.remove('active');
+    document.getElementById('progress-container').style.display = 'block';
+    document.getElementById('intro-text').style.display = 'block';
+    initQuiz();
+}
+
+window.onload = initQuiz;
+</script>
+
+</body>
+</html>
